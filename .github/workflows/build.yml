@@ -21,10 +21,14 @@ jobs:
 
       - name: Build with Buildozer
         run: |
-          yes | buildozer android debug
+          yes | buildozer android debug 2>&1 | tee build.log
+          exit ${PIPESTATUS[0]}
 
-      - name: Upload APK
+      - name: Upload APK or Log
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: package
-          path: bin/*.apk
+          path: |
+            bin/*.apk
+            build.log
